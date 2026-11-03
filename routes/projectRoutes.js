@@ -4,11 +4,14 @@ const {
   createProject,
   getProjects,
   getProjectById,
+  getPublicProjectPortal,
   addMilestone,
   updateMilestone,
   deleteProject,
 } = require('../controllers/projectController');
 const { protect } = require('../middleware/authMiddleware');
+
+router.get('/portal/:id', getPublicProjectPortal);
 
 router.use(protect);
 

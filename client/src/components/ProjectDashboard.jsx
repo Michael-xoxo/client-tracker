@@ -20,6 +20,8 @@ export default function ProjectDashboard() {
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [loadingProjects, setLoadingProjects] = useState(true);
   const [error, setError] = useState('');
+  const [copiedProjectId, setCopiedProjectId] = useState(null);
+  const [lastCopiedPortalUrl, setLastCopiedPortalUrl] = useState('');
 
   // Project creation form state
   const [title, setTitle] = useState('');
@@ -95,6 +97,20 @@ export default function ProjectDashboard() {
     ).length;
     return Math.round((completedMilestones / totalMilestones) * 100);
   }, [selectedProject]);
+
+  const handleCopyPortalLink = async (projectId) => {
+    const portalUrl = `${window.location.origin}${window.location.pathname}?portal=${projectId}`;
+    setLastCopiedPortalUrl(portalUrl);
+    setCopiedProjectId(projectId);
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(portalUrl);
+      }
+    } catch {
+      // Fallback: portalUrl is still exposed in state/DOM
+    }
+  };
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
@@ -247,10 +263,16 @@ export default function ProjectDashboard() {
   };
 
   return (
-    <div className="project-dashboard">
+    <div className="project-dashboard" data-copied-portal-url={lastCopiedPortalUrl}>
       {error && (
         <div className="dashboard-alert" role="alert">
           {error}
+        </div>
+      )}
+
+      {lastCopiedPortalUrl && (
+        <div className="portal-link-banner" role="status">
+          Portal link copied: <a href={lastCopiedPortalUrl}>{lastCopiedPortalUrl}</a>
         </div>
       )}
 
@@ -329,6 +351,7 @@ export default function ProjectDashboard() {
             <div className="project-list">
               {projects.map((project) => {
                 const isSelected = project._id === selectedProjectId;
+                const portalUrl = `${window.location.origin}${window.location.pathname}?portal=${project._id}`;
                 return (
                   <article
                     key={project._id}
@@ -352,6 +375,16 @@ export default function ProjectDashboard() {
                     </div>
 
                     <div className="project-card-actions">
+                      <button
+                        type="button"
+                        className="copy-portal-btn"
+                        data-portal-url={portalUrl}
+                        onClick={() => handleCopyPortalLink(project._id)}
+                      >
+                        {copiedProjectId === project._id
+                          ? 'Copied Portal Link'
+                          : 'Copy Portal Link'}
+                      </button>
                       <button
                         type="button"
                         className={isSelected ? 'select-btn active' : 'select-btn'}

@@ -1,0 +1,123 @@
+.client-portal-container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.portal-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.portal-badge {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  background: rgba(37, 99, 235, 0.1);
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+}
+
+.back-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-h);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.portal-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.portal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.portal-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.6rem;
+  color: var(--text-h);
+}
+
+.portal-client {
+  margin: 0;
+  font-size: 0.96rem;
+  color: var(--text);
+}
+
+.portal-progress-section {
+  margin-bottom: 1.75rem;
+}
+
+.portal-milestones-heading {
+  font-size: 1.1rem;
+  color: var(--text-h);
+  margin: 0 0 0.85rem;
+}
+
+.portal-milestone-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.portal-milestone-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-muted);
+}
+
+.portal-milestone-label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--text-h);
+  font-size: 0.95rem;
+}
+
+.portal-milestone-item.completed .portal-milestone-title {
+  text-decoration: line-through;
+  color: var(--text);
+}
+
+.milestone-state-tag {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+}
+
+.milestone-state-tag.done {
+  background: rgba(22, 163, 74, 0.12);
+  color: #16a34a;
+}
+
+.milestone-state-tag.pending {
+  background: rgba(107, 114, 128, 0.14);
+  color: var(--text);
+}

@@ -1,11 +1,18 @@
 import { useContext, useEffect, useState } from 'react';
 import './App.css';
 import AuthForm from './components/AuthForm';
+import ClientPortal from './components/ClientPortal';
 import ProjectDashboard from './components/ProjectDashboard';
 import { AuthContext, AuthProvider, useAuth } from './context/AuthContext';
 
+const getInitialPortalId = () => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('portal');
+};
+
 function Dashboard() {
   const { user, token, logout, isAuthenticated } = useAuth();
+  const [portalId, setPortalId] = useState(() => getInitialPortalId());
   const [sessionState, setSessionState] = useState({
     token: null,
     status: 'idle',
@@ -13,7 +20,15 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    if (!isAuthenticated || !token) {
+    const onPopState = () => {
+      setPortalId(getInitialPortalId());
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  useEffect(() => {
+    if (portalId || !isAuthenticated || !token) {
       return;
     }
 
@@ -56,7 +71,23 @@ function Dashboard() {
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated, token, logout]);
+  }, [portalId, isAuthenticated, token, logout]);
+
+  const handleExitPortal = () => {
+    window.history.pushState({}, '', window.location.pathname);
+    setPortalId(null);
+  };
+
+  if (portalId) {
+    return (
+      <main className="app-container">
+        <header className="brand-header">
+          <h1>Client Project Tracker</h1>
+        </header>
+        <ClientPortal projectId={portalId} onBack={handleExitPortal} />
+      </main>
+    );
+  }
 
   if (!isAuthenticated) {
     return (

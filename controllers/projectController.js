@@ -67,6 +67,41 @@ const getProjectById = async (req, res) => {
   }
 };
 
+// @desc    Get sanitized project for public client portal
+// @route   GET /api/projects/portal/:id
+// @access  Public
+const getPublicProjectPortal = async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    const project = await Project.findById(req.params.id);
+
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    return res.status(200).json({
+      _id: project._id,
+      title: project.title,
+      clientName: project.clientName,
+      status: project.status,
+      milestones: (project.milestones || []).map((m) => ({
+        _id: m._id,
+        title: m.title,
+        completed: m.completed,
+        dueDate: m.dueDate,
+      })),
+    });
+  } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc    Add milestone to a project
 // @route   POST /api/projects/:id/milestones
 // @access  Private
@@ -183,6 +218,7 @@ module.exports = {
   createProject,
   getProjects,
   getProjectById,
+  getPublicProjectPortal,
   addMilestone,
   updateMilestone,
   deleteProject,
