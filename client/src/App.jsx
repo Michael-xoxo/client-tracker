@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import './App.css';
 import AuthForm from './components/AuthForm';
+import ProjectDashboard from './components/ProjectDashboard';
 import { AuthContext, AuthProvider, useAuth } from './context/AuthContext';
 
 function Dashboard() {
@@ -80,6 +81,11 @@ function Dashboard() {
           <p className="user-meta">
             <span>Email: {user.email}</span>
             <span className="role-badge">Role: {user.role}</span>
+            {sessionStatus === 'confirmed' && sessionProfile && (
+              <span className="status-ok">
+                Active session confirmed via GET /api/auth/me
+              </span>
+            )}
           </p>
         </div>
         <button type="button" className="logout-btn" onClick={logout}>
@@ -87,36 +93,7 @@ function Dashboard() {
         </button>
       </header>
 
-      <section className="session-card" aria-live="polite">
-        <h2>Session Status</h2>
-        {sessionStatus === 'verifying' && <p>Verifying session via GET /api/auth/me...</p>}
-        {sessionStatus === 'confirmed' && sessionProfile && (
-          <div className="session-confirmed">
-            <p className="status-ok">Active session confirmed via GET /api/auth/me</p>
-            <dl className="profile-details">
-              <div>
-                <dt>User ID</dt>
-                <dd>{sessionProfile._id}</dd>
-              </div>
-              <div>
-                <dt>Name</dt>
-                <dd>{sessionProfile.name}</dd>
-              </div>
-              <div>
-                <dt>Email</dt>
-                <dd>{sessionProfile.email}</dd>
-              </div>
-              <div>
-                <dt>Role</dt>
-                <dd>{sessionProfile.role}</dd>
-              </div>
-            </dl>
-          </div>
-        )}
-        {sessionStatus === 'error' && (
-          <p className="status-error">Could not reach /api/auth/me to confirm session.</p>
-        )}
-      </section>
+      <ProjectDashboard />
     </main>
   );
 }
