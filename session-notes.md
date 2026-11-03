@@ -5,3 +5,8 @@
 ## Task 2.2 - Relational Project & Embedded Milestone API (2026-11-02)
 - **Architectural Decision**: Enforced tenant isolation directly inside Mongoose queries (`{ _id: req.params.id, user: req.user._id }`) combined with `mongoose.Types.ObjectId.isValid` pre-checks and positional `$set` updates (`'milestones.$.completed'`) to guarantee atomic sub-document mutations while returning uniform `404` responses on unauthorized or malformed IDs (preventing cross-user enumeration and unhandled `CastError`s).
 - **Friction Point / Bug Encountered**: Mongoose 9 deprecated the `{ new: true }` option on `findOneAndUpdate()`, emitting a runtime deprecation warning during `PATCH /api/projects/:id/milestones/:milestoneId`; updated the query options to `{ returnDocument: 'after', runValidators: true }`.
+
+
+## Task 2.3 - Client Scaffold, AuthContext & Session Management (2026-11-03)
+- **Architectural Decision**: Structured `AuthContext` with lazy `useState` initializers that hydrate `token` and `user` directly from `localStorage` on initial render (eliminating an unauthenticated flash on page reload) while verifying active sessions against `GET /api/auth/me` via the Vite `/api` proxy and automatically purging `localStorage` on `401` responses.
+- **Friction Point / Bug Encountered**: Vite 8's bundled `oxlint` flagged `react(set-state-in-effect)` when resetting session verification state synchronously at the top of `useEffect` in `App.jsx`; resolved by keying the verification state object by `token` and deriving the `verifying` status during render until the async `/api/auth/me` promise resolves.
